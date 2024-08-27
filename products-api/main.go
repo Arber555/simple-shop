@@ -23,6 +23,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+
 	log.Printf("Products API server started on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
@@ -39,15 +40,18 @@ func productsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchProductsFromDB() ([]Product, error) {
+	log.Println("Using database DSN:", os.Getenv("PRODUCTS_DB_DSN"))
 	connStr := os.Getenv("PRODUCTS_DB_DSN")
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
+		log.Println("Failed to connect to database:", err)
 		return nil, err
 	}
 	defer db.Close()
 
 	rows, err := db.Query("SELECT id, name, price FROM products")
 	if err != nil {
+		log.Println("Failed to execute query:", err)
 		return nil, err
 	}
 	defer rows.Close()

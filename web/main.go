@@ -25,10 +25,13 @@ func main() {
 	fmt.Println("Starting web", os.Getenv("PRODUCTS_API_URL"))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "<h1>Welcome to the Product Store!</h1>")
+		// make the header red
+		fmt.Fprintln(w, "<h1 style='color:black'>Welcome to the SimpleShop v1</h1>")
 	})
 
 	http.HandleFunc("/products", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Calling /products in pod", os.Getenv("HOSTNAME"))
+
 		products, err := fetchProducts()
 		if err != nil {
 			log.Printf("Failed to fetch products: %v", err)

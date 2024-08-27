@@ -8,7 +8,7 @@ Before starting with Kubernetes, ensure your environment is set up with the foll
 - Download and install Docker from Docker's website.
 - Enable Kubernetes in Docker Desktop (under Settings > Kubernetes).
 2. Install kubectl
-- Install kubectl following the [guide](https://pwittrock.github.io/docs/tasks/tools/install-kubectl/).
+- Install kubectl following the [guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)).
 - Verify the installation with:
 
 ```
@@ -60,11 +60,10 @@ Now that the individual components are running in Pods, let’s connect them thr
 - Model internal routes for each component
 - Use Kubernetes Service objects to create stable endpoints:
 
-For the PostgreSQL database: DNS simpleshop-products-db, port 5432
-For the products API: DNS simpleshop-products-api, port 80
-For the stock API: DNS simpleshop-stock-api, port 80
-Expose the web app to external traffic
-Model a Service to expose the web component externally. The web app listens on port 80, and you can map it to an external port of your choice.
+1. Add a `ClusterIP` service for the `simpleshop-products-db` pod. Use port 5432.
+2. Add a `ClusterIP` service for the `simpleshop-products-api` pod. You can choose any port, and it can be overridden using the environment variable `PORT`.
+3. Add a `ClusterIP` service for the `simpleshop-stock-api pod`. You can choose any port, and it can be overridden using the environment variable PORT.
+4. Add either a `NodePort` or `LoadBalancer` service for the `simpleshop-web` pod to expose the web app to external traffic on port 80.
 
 **Deploy the Services**
 Apply your Service definitions using `kubectl apply -f`.
@@ -87,13 +86,13 @@ Now, configure the application dynamically using Kubernetes objects like ConfigM
 
 **Set API configurations**
 Store non-sensitive config files in ConfigMaps and sensitive files in Secrets. For example:
-- `simpleshop-products-api` should receive database connection settings via environment variables.
+- `simpleshop-products-api` should receive database connection settings via environment variables. The databse connection should be stored as Secret.
 - `simpleshop-stock-api`  should receive config files in /app/config/. The following file content:
 
 ```
 {
     "name": "SimpleShop Stock API",
-    "port": "8082"
+    "port": "8080"
 }
 ```
 
@@ -121,7 +120,7 @@ Prepare the SimpleShop app for production by making it scalable and highly avail
 Roll out a new version (stefanprifti/simpleshop-web:v2) and ensure the website stays online during the update.
 
 **Test the scaling and update process**
-Verify the app is load-balancing correctly and that the update is successful.
+Verify the app is load-balancing correctly and that the update is successful. Make sure you're using a LoadBalancer Service for the simpleshop-web deployment.
 
 **Deliverable**
 - YAML files modeling the Deployments and the scaling commands
