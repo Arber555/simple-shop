@@ -28,7 +28,7 @@ To build and run the application, you need to have the following installed:
 ### Building images
 
 ```
-make all
+make all DOCKER_USERNAME=your-dockerhub-username
 ```
 This will build the following Docker images:
 
