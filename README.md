@@ -64,6 +64,8 @@ Ensure you have logged into Docker Hub via docker login before pushing.
 
 ## Guides
 
+These guides provide a step-by-step approach to deploying, configuring, and securing the SimpleShop web application in a Kubernetes environment.
+
 ### [Chapter 1: Running and Configuring SimpleShop in Kubernetes](guides/chapter1.md)
 
 1. **[Prerequisites](guides/chapter1.md#prerequisites)**
