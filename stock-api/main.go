@@ -29,6 +29,7 @@ func main() {
 	}
 
 	http.HandleFunc("/stock", stockHandler)
+	http.HandleFunc("/health", healthHandler)
 
 	// Use the configured port if available, otherwise fallback to env PORT or default to 8080
 	port := config.Port
@@ -51,6 +52,11 @@ func stockHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(stock)
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
 
 // loadConfig loads configuration from the given filepath

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -16,8 +17,33 @@ type Product struct {
 	Price string `json:"price"`
 }
 
+type App struct {
+	DB *sql.DB
+}
+
 func main() {
-	http.HandleFunc("/products", productsHandler)
+	// Set up logging
+	logFile, err := os.OpenFile("/logs/app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+	defer logFile.Close()
+
+	// Log to both file and standard output
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
+
+	connStr := os.Getenv("PRODUCTS_DB_DSN")
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatalf("Failed to connect to the database: %v", err)
+	}
+	defer db.Close()
+
+	app := &App{DB: db}
+
+	http.HandleFunc("/products", app.productsHandler)
+	http.HandleFunc("/health", app.healthHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -28,8 +54,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-func productsHandler(w http.ResponseWriter, r *http.Request) {
-	products, err := fetchProductsFromDB()
+func (app *App) productsHandler(w http.ResponseWriter, r *http.Request) {
+	products, err := app.fetchProductsFromDB()
 	if err != nil {
 		log.Printf("Failed to fetch products: %v", err)
 		http.Error(w, "Failed to fetch products", http.StatusInternalServerError)
@@ -39,17 +65,8 @@ func productsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(products)
 }
 
-func fetchProductsFromDB() ([]Product, error) {
-	log.Println("Using database DSN:", os.Getenv("PRODUCTS_DB_DSN"))
-	connStr := os.Getenv("PRODUCTS_DB_DSN")
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Println("Failed to connect to database:", err)
-		return nil, err
-	}
-	defer db.Close()
-
-	rows, err := db.Query("SELECT id, name, price FROM products")
+func (app *App) fetchProductsFromDB() ([]Product, error) {
+	rows, err := app.DB.Query("SELECT id, name, price FROM products")
 	if err != nil {
 		log.Println("Failed to execute query:", err)
 		return nil, err
@@ -65,4 +82,16 @@ func fetchProductsFromDB() ([]Product, error) {
 		products = append(products, product)
 	}
 	return products, nil
+}
+
+func (app *App) healthHandler(w http.ResponseWriter, r *http.Request) {
+	if err := app.DB.Ping(); err != nil {
+		log.Println("Health check failed: database unreachable")
+		http.Error(w, "Database unreachable", http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Health check passed")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
