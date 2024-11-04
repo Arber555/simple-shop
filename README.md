@@ -95,3 +95,14 @@ These guides provide a step-by-step approach to deploying, configuring, and secu
 
 3. **[Using Volumes for Storage](guides/chapter2.md#using-volumes-for-storage)**
    - Covers how to surface logs with ephemeral storage and configure persistent storage for the Product Database.
+
+---
+
+### [Chapter 3: Automated Deployments Using Helm](guides/chapter3.md)
+
+1. **[Templated Deployment Using Helm](guides/chapter3.md#templated-deployment-using-helm)**
+   - Guides you through packaging the entire SimpleShop app into a Helm chart for consistent, scalable, and automated deployments.
+
+2. **[Deployment Strategies](guides/chapter3.md#deployment-strategies)**
+   - Covers custom strategies, including fast rollouts for the Stock API, replacement upgrades for the Products API, partial updates for the database, and blue/green deployments for the web.
+

@@ -25,6 +25,14 @@ func main() {
 	fmt.Println("Starting web", os.Getenv("PRODUCTS_API_URL"))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		theme := os.Getenv("THEME")
+
+		if theme == "dark" {
+			fmt.Fprintln(w, "<style>body { background-color: black; color: white; }</style>")
+		} else {
+			fmt.Fprintln(w, "<style>body { background-color: white; color: black; }</style>")
+		}
+
 		// make the header red
 		fmt.Fprintln(w, "<h1 style='color:black'>Welcome to the SimpleShop v1</h1>")
 	})
