@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
   - name: stock-api
-    image: arber555/simpleshop-stock-api:v1
+    image: arber555/simpleshop-stock-api:v2
     ports:
     - containerPort: 8081
     resources:

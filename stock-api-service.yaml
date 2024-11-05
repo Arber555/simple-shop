@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpleshop-stock-api
+  labels:
+    app: simpleshop
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8081  # Define a port; this can be overridden with PORT env var
+      targetPort: 8081
+  selector:
+    app: simpleshop
+    component: stock-api
