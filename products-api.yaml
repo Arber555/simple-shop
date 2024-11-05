@@ -12,10 +12,26 @@ spec:
       ports:
         - containerPort: 8080
       env:
-        - name: PRODUCTS_DB_DSN
-          value: "postgres://<username>:<password>@simpleshop-products-db:5432/<dbname>?sslmode=disable"
-        - name: PORT
-          value: "8080"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_PORT
       volumeMounts:
         - name: log-volume
           mountPath: /logs

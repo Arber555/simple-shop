@@ -7,11 +7,14 @@ metadata:
     component: stock-api
 spec:
   containers:
-  - name: stock-api
-    image: arber555/simpleshop-stock-api:v2
-    ports:
-    - containerPort: 8081
-    resources:
-      limits:
-        memory: "256Mi"
-        cpu: "250m"
+    - name: stock-api
+      image: arber555/simpleshop-stock-api:v1
+      ports:
+        - containerPort: 8081
+      volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: stock-config

@@ -1,4 +1,4 @@
 {
-    "name": "Stock API",
-    "port": "8081"
+    "name": "SimpleShop Stock API",
+    "port": "8080"
 }
