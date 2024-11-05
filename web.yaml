@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simpleshop-web
+  labels:
+    app: simpleshop
+    component: web
+spec:
+  containers:
+  - name: web
+    image: arber555/simpleshop-web:v1
+    ports:
+    - containerPort: 80
+    resources:
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
