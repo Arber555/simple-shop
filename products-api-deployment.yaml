@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleshop-products-api
+spec:
+  replicas: 1  # Can be scaled later
+  selector:
+    matchLabels:
+      app: simpleshop
+      component: products-api
+  template:
+    metadata:
+      labels:
+        app: simpleshop
+        component: products-api
+    spec:
+      containers:
+      - name: products-api
+        image: arber555/simpleshop-products-api:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: products-api-db-credentials
+              key: DB_PORT
+        volumeMounts:
+        - name: log-volume
+          mountPath: /logs
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+      volumes:
+      - name: log-volume
+        emptyDir: {}

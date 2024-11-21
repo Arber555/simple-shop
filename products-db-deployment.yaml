@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleshop-products-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simpleshop
+      component: products-db
+  template:
+    metadata:
+      labels:
+        app: simpleshop
+        component: products-db
+    spec:
+      containers:
+      - name: products-db
+        image: arber555/simpleshop-products-db:v1
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: products-db-credentials
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: products-db-credentials
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: products-db-credentials
+              key: POSTGRES_DB

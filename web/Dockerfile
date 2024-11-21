@@ -6,6 +6,9 @@ RUN addgroup -S appgroup && adduser -S -u 1000 -G appgroup appuser
 # Set the working directory
 WORKDIR /app
 
+# Add a debug flag as an environment variable
+ENV DEBUG_MODE=true
+
 # Copy the application source code
 COPY . .
 
