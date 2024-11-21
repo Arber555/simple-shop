@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleshop-web
+spec:
+  replicas: 1  # Can be scaled later
+  selector:
+    matchLabels:
+      app: simpleshop
+      component: web
+  template:
+    metadata:
+      labels:
+        app: simpleshop
+        component: web
+    spec:
+      containers:
+      - name: web
+        image: arber555/simpleshop-web:v2
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

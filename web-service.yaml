@@ -5,11 +5,10 @@ metadata:
   labels:
     app: simpleshop
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-    - port: 80  # Port exposed externally
+    - port: 80         # Port exposed externally
       targetPort: 8080 # Port the container is listening on
-      nodePort: 30003  # External port for NodePort
   selector:
     app: simpleshop
     component: web

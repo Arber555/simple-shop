@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleshop-stock-api
+spec:
+  replicas: 1  # Can be scaled later
+  selector:
+    matchLabels:
+      app: simpleshop
+      component: stock-api
+  template:
+    metadata:
+      labels:
+        app: simpleshop
+        component: stock-api
+    spec:
+      containers:
+      - name: stock-api
+        image: arber555/simpleshop-stock-api:v1
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: stock-config
